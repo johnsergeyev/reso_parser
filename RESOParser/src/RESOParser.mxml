@@ -17,16 +17,11 @@
 	<fx:Script>
 		<![CDATA[
 			import classes.Controller;
-			import classes.FirstGroupData;
 			import classes.GroupData;
-			import classes.SecondGroupData;
-			
 			import interfaces.IDataString;
-			
 			import mx.controls.Alert;
 			import mx.events.CloseEvent;
-			
-			
+
 			private var counter:int = 0;
 			private var file:FileReference = new FileReference();
 			private var data_array:Array = new Array();
@@ -171,23 +166,23 @@
 			private function parseText( txt:String ):void
 			{
 				var data:IDataString;
-				txt = txt.replace(/\r/gi,"");
-				txt = txt.replace(/\t/gi,"");
+				txt = txt.replace(/\r/gi," ");
+				txt = txt.replace(/\t/gi," ");
 				txt = mergeThousands(txt);
 				var index:int = 0;
 				var line:String = "";
 				while (index < txt.length) {
 					var _index:int = txt.indexOf("\n", index);
-					line = GroupData.correct(txt.slice(index, _index));
+					line = txt.slice(index, _index);
 					index = _index+1;
 					
 					if (line.indexOf("Группа I.",0) != -1) {
 						if (data == null)
-							data = new FirstGroupData();
+							data = new GroupData("group1");
 					} else if (line.indexOf("Группа II.",0) != -1) {
-						if (data is FirstGroupData) {
+						if (data.getType() == "group1") {
 							data_array.push(data);
-							data = new SecondGroupData();
+							data = new GroupData("group2");
 						}
 					}
 					
