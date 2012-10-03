@@ -176,6 +176,8 @@
 					line = txt.slice(index, _index);
 					index = _index+1;
 					
+					//dev
+					
 					if (line.indexOf("Группа I.",0) != -1) {
 						if (data == null)
 							data = new GroupData("group1");
