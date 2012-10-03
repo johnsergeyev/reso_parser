@@ -52,13 +52,36 @@ package classes
 			return _str;
 		}
 		
-		public function getCarGroup(str:String):Array
+		public function getCarGroup(str:String, car_groups:Array):Array
 		{
-			if ((str.indexOf(string_a) == -1)&&(str.indexOf(string_b) == -1)) return null;
+			if (!hasCarGroup(str, car_groups)) return [null, str];
 			else {
-				var index:int = (str.indexOf(string_a)>str.indexOf(string_b))?(str.indexOf(string_a)+string_a.length):(str.indexOf(string_b)+string_b.length);
+				var index:int = getCarGroupIndex(str, car_groups);
 				return [str.slice(0, index),str.slice(index)];
 			}
+		}
+		
+		private function getCarGroupIndex(str:String, car_groups:Array):int
+		{
+			var index:int = 0;
+			var _index:int;
+			for (var i:int = 0; i < car_groups.length; i++) {
+				if (str.indexOf(car_groups[i]) != -1) {
+					 _index = str.indexOf(car_groups[i]) + (car_groups[i] as String).length;
+					 if (_index > index) {
+						 index = _index;
+					 }
+				}
+			}
+			return index;
+		}
+		
+		private function hasCarGroup(str:String, car_groups:Array):Boolean
+		{
+			for (var i:int = 0; i < car_groups.length; i++) {
+				if (str.indexOf(car_groups[i]) != -1) return true;
+			}
+			return false;
 		}
 		
 		public static function correct(str:String):String 

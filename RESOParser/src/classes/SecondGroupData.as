@@ -43,7 +43,7 @@ package classes
 					params[row_ids[i]] = row_data;
 				}
 				if (cars.length) {
-					var arr:Array = getCarGroup(cars[0]);
+					var arr:Array = getCarGroup(cars[0], groups);
 					var cars_group:String = arr[0];
 					cars[0] = arr[1];
 				}
