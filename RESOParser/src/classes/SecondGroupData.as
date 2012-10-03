@@ -3,13 +3,22 @@ package classes
 	import interfaces.IDataString;
 	public class SecondGroupData extends GroupData implements IDataString
 	{
-		private var colum_ids:Array = ["2012","2011","2010","2009","2008","2007","2006","2005"];
-		private var rows:Array  = ["ТХ, %","МБП, тыс. руб","ТДУ, %"];
-		private var row_ids:Array = ["th","mbp","tdu"];
+		private var columns:Array = ["2012","2011","2010","2009","2008","2007","2006","2005","f","k"];
+		private var column_ids:Array = new Array();
+		private var rows:Array  = ["РСС, тыс.руб.","ТХ, %","МБП, тыс.руб.","ТДУ, %"];
+		private var groups:Array = new Array();
+		private var row_ids:Array = new Array();
 		private var out_data:Array = new Array();
 		
 		public function SecondGroupData()
 		{
+			columns = Controller.initData["group2"]["columns"];
+			for (var i:int = 0; i < columns.length; i++)
+				column_ids.push("c"+(i+1).toString());
+			rows = Controller.initData["group2"]["rows"];
+			groups = Controller.initData["group2"]["car_groups"];
+			for (i = 0; i < rows.length; i++)
+				row_ids.push("r"+(i+1).toString());
 			super();
 		}
 		
@@ -28,7 +37,7 @@ package classes
 					var data_array:Array = data.split(" ");
 					data_array = removeEmpty(data_array);
 					for (var j:int = 0; j < data_array.length; j++) {
-						row_data[colum_ids[j]] = data_array[j];
+						row_data[column_ids[j]] = data_array[j];
 					}
 					str = str.slice(0, str.indexOf(rows[i]));
 					params[row_ids[i]] = row_data;

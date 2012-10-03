@@ -6,7 +6,7 @@ package classes
 
 	public class FirstGroupData extends GroupData implements IDataString
 	{
-		private var colums:Array = ["2012","2011","2010","2009","2008","2007","2006","2005","f","k"];
+		private var columns:Array = ["2012","2011","2010","2009","2008","2007","2006","2005","f","k"];
 		private var column_ids:Array = new Array();
 		private var rows:Array  = ["РСС, тыс.руб.","ТХ, %","МБП, тыс.руб.","ТДУ, %"];
 		private var row_ids:Array = new Array();
@@ -14,6 +14,12 @@ package classes
 		
 		public function FirstGroupData()
 		{
+			columns = Controller.initData["group1"]["columns"];
+			for (var i:int = 0; i < columns.length; i++)
+				column_ids.push("c"+(i+1).toString());
+			rows = Controller.initData["group1"]["rows"];
+			for (i = 0; i < rows.length; i++)
+				row_ids.push("r"+(i+1).toString());
 			super();
 		}
 		

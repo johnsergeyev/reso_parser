@@ -9,8 +9,8 @@
 		<s:State name="base"/>
 		<s:State name="empty"/>
 	</s:states>
-	<mx:VBox width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" paddingLeft="10" y="0" includeIn="base">
-		<s:Label text="Загрузка .txt файла..." id="info" visible="false" width="100%"/>
+	<mx:VBox width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" paddingLeft="10" y="0" visible.base="true" visible.empty="false">
+		<s:Label id="info" visible="false" width="100%" textAlign="center"/>
 		<s:Button label="Загрузить текстовый файл РЕСО" click="load()"/>
 	</mx:VBox>
 	<s:Button includeIn="empty" x="199" y="95" label="Попробовать ещё раз" click="preinit()"/>
@@ -18,6 +18,7 @@
 		<![CDATA[
 			import classes.Controller;
 			import classes.FirstGroupData;
+			import classes.GroupData;
 			import classes.SecondGroupData;
 			
 			import interfaces.IDataString;
@@ -26,7 +27,7 @@
 			import mx.events.CloseEvent;
 			private var file:FileReference = new FileReference();
 			private var data_array:Array = new Array();
-			private var initFile:String = "#Пример того, как выглядит файл, каждая строка с символом '#' в начале не учитывается\r\n#(по умолчанию файл заполнится данными, пригодными для распознавания текущей на момент написания версии РЕСО документа)\r\n#\r\n#\r\n#group1 // идентификатор того, что далее следует описание правил для 1й группы\r\n#columns // перечисление колонок\r\n#2012-\r\n#2011\r\n#2010\r\n#2009\r\n#2008\r\n#2007\r\n#2006\r\n#2005\r\n#f\r\n#k\r\n#rows // перечисление строк должны включать в себя точные копии из исходного документа,\r\n#по ним определяются границы того, или иного участка текста.\r\n#РСС, тыс.руб.\r\n#ТХ, %\r\n#МБП, тыс.руб.\r\n#ТДУ, %\r\n#group2 // идентификатор того, что далее следует описание правил для 2й группы\r\n#columns // перечисление колонок\r\n#2012-\r\n#2011\r\n#2010\r\n#2009\r\n#2008\r\n#2007\r\n#2006\r\n#2005\r\n#rows // перечисление строк должны включать в себя точные копии из исходного документа,\r\n#по ним определяются границы того, или иного участка текста.\r\n#group_names // регистронезависим. для корректной работы парсера на второй группе, необходимо ввести названия возможных групп автомобилей, перечисление от наибольшего к наименьшему, в случае однокоренного слова. например ВНЕДОРОДОРОЖНИКИ раньше ВНЕДОРОЖНИК\r\n#ЛЕГКОВЫЕ\r\n#Иномарки\r\n#ВНЕДОРОЖНИКИ\r\n#ВНЕДОРОЖНИК\r\n#LAND ROVER\r\n#LEXUS GX\r\n#MERCEDES G\r\n#SCANIA\r\n#Грузовые\r\n#АВТОДОМ\r\n#Грузовики для междугородних перевозок\r\n#Микроавтобусы Иномарки и Грузовики категории В\r\n#Микроавтобусы\r\n#Полуприцепы\r\n#Прицепы\r\n#Конец примера ///////////////////////////////////////////////////////////////////////////////////////////// можно удалить, если это мешает глазу\r\ngroup1\r\ncolumns\r\n2012-\r\n2011\r\n2010\r\n2009\r\n2008\r\n2007\r\n2006\r\n2005\r\nf\r\nk\r\nrows\r\nРСС, тыс.руб.\r\nТХ, %\r\nМБП, тыс.руб.\r\nТДУ, %\r\ngroup2\r\ncolumns\r\n2012-\r\n2011\r\n2010\r\n2009\r\n2008\r\n2007\r\n2006\r\n2005\r\nrows\r\ngroup_names\r\nЛЕГКОВЫЕ\r\nИномарки\r\nВНЕДОРОЖНИКИ\r\nВНЕДОРОЖНИК\r\nLAND ROVER\r\nLEXUS GX\r\nERCEDES G\r\nSCANIA\r\nГрузовые\r\nАВТОДОМ\r\nГрузовики для междугородних перевозок\r\nМикроавтобусы Иномарки и Грузовики категории В\r\nМикроавтобусы\r\nПолуприцепы\r\nПрицепы"
+			private var initFile:String = "#Пример того, как выглядит файл, каждая строка с символом '#' в начале не учитывается\r\n#(по умолчанию файл заполнится данными, пригодными для распознавания текущей на момент написания версии РЕСО документа)\r\n#\r\n#\r\n#group1 // идентификатор того, что далее следует описание правил для 1й группы\r\n#columns // перечисление колонок\r\n#2012-\r\n#2011\r\n#2010\r\n#2009\r\n#2008\r\n#2007\r\n#2006\r\n#2005\r\n#f\r\n#k\r\n#rows // перечисление строк должны включать в себя точные копии из исходного документа,\r\n#по ним определяются границы того, или иного участка текста.\r\n#РСС, тыс.руб.\r\n#ТХ, %\r\n#МБП, тыс.руб.\r\n#ТДУ, %\r\n#group2 // идентификатор того, что далее следует описание правил для 2й группы\r\n#columns // перечисление колонок\r\n#2012-\r\n#2011\r\n#2010\r\n#2009\r\n#2008\r\n#2007\r\n#2006\r\n#2005\r\n#rows // перечисление строк должны включать в себя точные копии из исходного документа,\r\n#по ним определяются границы того, или иного участка текста.\r\n#car_groups // регистронезависим. для корректной работы парсера на второй группе, необходимо ввести названия возможных групп автомобилей, перечисление от наибольшего к наименьшему, в случае однокоренного слова. например ВНЕДОРОДОРОЖНИКИ раньше ВНЕДОРОЖНИК\r\n#ЛЕГКОВЫЕ\r\n#Иномарки\r\n#ВНЕДОРОЖНИКИ\r\n#ВНЕДОРОЖНИК\r\n#LAND ROVER\r\n#LEXUS GX\r\n#MERCEDES G\r\n#SCANIA\r\n#Грузовые\r\n#АВТОДОМ\r\n#Грузовики для междугородних перевозок\r\n#Микроавтобусы Иномарки и Грузовики категории В\r\n#Микроавтобусы\r\n#Полуприцепы\r\n#Прицепы\r\n#Конец примера ///////////////////////////////////////////////////////////////////////////////////////////// можно удалить, если это мешает глазу\r\ngroup1\r\ncolumns\r\n2012-\r\n2011\r\n2010\r\n2009\r\n2008\r\n2007\r\n2006\r\n2005\r\nf\r\nk\r\nrows\r\nРСС, тыс.руб.\r\nТХ, %\r\nМБП, тыс.руб.\r\nТДУ, %\r\ngroup2\r\ncolumns\r\n2012-\r\n2011\r\n2010\r\n2009\r\n2008\r\n2007\r\n2006\r\n2005\r\nrows\r\ncar_groups\r\nЛЕГКОВЫЕ\r\nИномарки\r\nВНЕДОРОЖНИКИ\r\nВНЕДОРОЖНИК\r\nLAND ROVER\r\nLEXUS GX\r\nERCEDES G\r\nSCANIA\r\nГрузовые\r\nАВТОДОМ\r\nГрузовики для междугородних перевозок\r\nМикроавтобусы Иномарки и Грузовики категории В\r\nМикроавтобусы\r\nПолуприцепы\r\nПрицепы"
 			
 			private function self():RESOParser {
 				return this;
@@ -67,6 +68,67 @@
 					});
 					return;
 				}
+				var str:String = stream.readUTFBytes(stream.bytesAvailable);
+				this.visible = true;
+				currentState = "base";
+				this.enabled = false;
+				parseInitialString(str);
+			}
+			
+			private function parseInitialString(str:String):void
+			{
+				var lines:Array = GroupData.removeEmpty(str.split('\r\n'));
+				var obj:Object = new Object();
+				var _obj:*;
+				var str:String;
+				
+				var columns:Boolean = false;
+				var rows:Boolean = false;
+				var groups:Boolean = false;
+				
+				while (lines.length != 0) {
+					var line:String = lines[0];
+					lines.splice(0,1);
+					
+					if (line.charAt(0) == "#") continue;
+					
+					if (line.indexOf("group1") != -1) {
+						str = "group1";
+						if (!obj[str]){
+							obj[str] = new Object();
+						}
+					} else if (line.indexOf("group2") != -1) {
+						str = "group2";
+						if (!obj[str]){
+							obj[str] = new Object();
+						}
+					} else if (line.indexOf("columns") != -1) {
+						if (!obj[str]["columns"]){
+							obj[str]["columns"] = new Array();
+						}
+						_obj = obj[str]["columns"]; 
+					} else if (line.indexOf("rows") != -1) {
+						if (!obj[str]["rows"]){
+							obj[str]["rows"] = new Array();
+						}
+						_obj = obj[str]["rows"]; 
+					} else if (line.indexOf("car_groups") != -1) {
+						if (!obj[str]["car_groups"]){
+							obj[str]["car_groups"] = new Array();
+						}
+						_obj = obj[str]["car_groups"]; 
+					} else {
+						try{
+							traceCar(line);
+						}catch(e:Error){
+							
+						}
+						(_obj as Array).push(line);
+					}
+				}
+				
+				Controller.initData = obj;
+				this.enabled = true;
 			}
 			
 			public function traceCar(str:String):void
@@ -88,20 +150,9 @@
 			
 			private function load():void 
 			{
-				var f:File = File.documentsDirectory.resolvePath("text.txt"); 
-				var stream = new FileStream();
-				stream.open(f, FileMode.WRITE);                                         
-				
-				//var j:JPGEncoder = new JPGEncoder(80);
-				//var bytes:ByteArray = j.encode(visualLogo.bitmapData);
-				//stream.writeBytes(bytes, 0, bytes.bytesAvailable);
-				
-				stream.writeUTFBytes("This is my text file.");
-				stream.close();
-				
-				//file.addEventListener( Event.SELECT, doFileSelect );
-				//file.addEventListener( Event.COMPLETE, doFileComplete );
-				//file.browse( [new FileFilter( "txt Ресо файл", "*.txt" )] );
+				file.addEventListener( Event.SELECT, doFileSelect );
+				file.addEventListener( Event.COMPLETE, doFileComplete );
+				file.browse( [new FileFilter( "txt Ресо файл", "*.txt" )] );
 			}
 			
 			private function doFileSelect( event:Event ):void

@@ -4,14 +4,11 @@ package classes
 
 	public class GroupData 
 	{
-		private const string_a:String = "ЛЕГКОВЫЕ";
-		private const string_b:String = "ВНЕДОРОЖНИКИ";
-		
 		public function GroupData()
 		{
 		}
 		
-		public function removeEmpty(arr:Array):Array
+		public static function removeEmpty(arr:Array):Array
 		{
 			var _arr:Array = new Array();
 			for (var i:int = 0; i < arr.length; i++) {
@@ -64,7 +61,7 @@ package classes
 			}
 		}
 		
-		public function correct(str:String):String 
+		public static function correct(str:String):String 
 		{
 			while ((str.charAt(0)==',')||(str.charAt(0)==" ")) {
 				str = str.slice(1);
