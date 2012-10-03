@@ -4,13 +4,19 @@
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
 					   width="550"
 					   height="200"
-					   preinitialize="preinit()">
-	<mx:HBox width="100%" height="100%" horizontalAlign="left" verticalAlign="middle" paddingLeft="10" y="0">
-		<s:Button label="Load" click="load()"/>
-		<s:Label text="Загрузка .txt файла..." id="info" visible="false"/>
-	</mx:HBox>
+					   preinitialize="preinit()" currentState="base">
+	<s:states>
+		<s:State name="base"/>
+		<s:State name="empty"/>
+	</s:states>
+	<mx:VBox width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" paddingLeft="10" y="0" includeIn="base">
+		<s:Label text="Загрузка .txt файла..." id="info" visible="false" width="100%"/>
+		<s:Button label="Загрузить текстовый файл РЕСО" click="load()"/>
+	</mx:VBox>
+	<s:Button includeIn="empty" x="199" y="95" label="Попробовать ещё раз" click="preinit()"/>
 	<fx:Script>
 		<![CDATA[
+			import classes.Controller;
 			import classes.FirstGroupData;
 			import classes.SecondGroupData;
 			
@@ -20,7 +26,7 @@
 			import mx.events.CloseEvent;
 			private var file:FileReference = new FileReference();
 			private var data_array:Array = new Array();
-			private var initFile:String = "#Пример того, как выглядит файл, каждая строка с символом '#' в начале не учитывается\r#(по умолчанию файл заполнится данными, пригодными для распознавания текущей на момент написания версии РЕСО документа)\n#\n#\n#group1 // идентификатор того, что далее следует описание правил для 1й группы\n#columns // перечисление колонок\n#2012-\n#2011\n#2010\n#2009\n#2008\n#2007\n#2006\n#2005\n#f\n#k\n#rows // перечисление строк должны включать в себя точные копии из исходного документа,\n#по ним определяются границы того, или иного участка текста.\n#РСС, тыс.руб.\n#ТХ, %\n#МБП, тыс.руб.\n#ТДУ, %\n#group2 // идентификатор того, что далее следует описание правил для 2й группы\n#columns // перечисление колонок\n#2012-\n#2011\n#2010\n#2009\n#2008\n#2007\n#2006\n#2005\n#rows // перечисление строк должны включать в себя точные копии из исходного документа,\n#по ним определяются границы того, или иного участка текста.\n#group_names // регистронезависим. для корректной работы парсера на второй группе, необходимо ввести названия возможных групп автомобилей, перечисление от наибольшего к наименьшему, в случае однокоренного слова. например ВНЕДОРОДОРОЖНИКИ раньше ВНЕДОРОЖНИК\n#ЛЕГКОВЫЕ\n#Иномарки\n#ВНЕДОРОЖНИКИ\n#ВНЕДОРОЖНИК\n#LAND ROVER\n#LEXUS GX\n#MERCEDES G\n#SCANIA\n#Грузовые\n#АВТОДОМ\n#Грузовики для междугородних перевозок\n#Микроавтобусы Иномарки и Грузовики категории В\n#Микроавтобусы\n#Полуприцепы\n#Прицепы\n#Конец примера ///////////////////////////////////////////////////////////////////////////////////////////// можно удалить, если это мешает глазу\ngroup1\ncolumns\n2012-\n2011\n2010\n2009\n2008\n2007\n2006\n2005\nf\nk\nrows\nРСС, тыс.руб.\nТХ, %\nМБП, тыс.руб.\nТДУ, %\ngroup2\ncolumns\n2012-\n2011\n2010\n2009\n2008\n2007\n2006\n2005\nrows\ngroup_names\nЛЕГКОВЫЕ\nИномарки\nВНЕДОРОЖНИКИ\nВНЕДОРОЖНИК\nLAND ROVER\nLEXUS GX\nERCEDES G\nSCANIA\nГрузовые\nАВТОДОМ\nГрузовики для междугородних перевозок\nМикроавтобусы Иномарки и Грузовики категории В\nМикроавтобусы\nПолуприцепы\nПрицепы"
+			private var initFile:String = "#Пример того, как выглядит файл, каждая строка с символом '#' в начале не учитывается\r\n#(по умолчанию файл заполнится данными, пригодными для распознавания текущей на момент написания версии РЕСО документа)\r\n#\r\n#\r\n#group1 // идентификатор того, что далее следует описание правил для 1й группы\r\n#columns // перечисление колонок\r\n#2012-\r\n#2011\r\n#2010\r\n#2009\r\n#2008\r\n#2007\r\n#2006\r\n#2005\r\n#f\r\n#k\r\n#rows // перечисление строк должны включать в себя точные копии из исходного документа,\r\n#по ним определяются границы того, или иного участка текста.\r\n#РСС, тыс.руб.\r\n#ТХ, %\r\n#МБП, тыс.руб.\r\n#ТДУ, %\r\n#group2 // идентификатор того, что далее следует описание правил для 2й группы\r\n#columns // перечисление колонок\r\n#2012-\r\n#2011\r\n#2010\r\n#2009\r\n#2008\r\n#2007\r\n#2006\r\n#2005\r\n#rows // перечисление строк должны включать в себя точные копии из исходного документа,\r\n#по ним определяются границы того, или иного участка текста.\r\n#group_names // регистронезависим. для корректной работы парсера на второй группе, необходимо ввести названия возможных групп автомобилей, перечисление от наибольшего к наименьшему, в случае однокоренного слова. например ВНЕДОРОДОРОЖНИКИ раньше ВНЕДОРОЖНИК\r\n#ЛЕГКОВЫЕ\r\n#Иномарки\r\n#ВНЕДОРОЖНИКИ\r\n#ВНЕДОРОЖНИК\r\n#LAND ROVER\r\n#LEXUS GX\r\n#MERCEDES G\r\n#SCANIA\r\n#Грузовые\r\n#АВТОДОМ\r\n#Грузовики для междугородних перевозок\r\n#Микроавтобусы Иномарки и Грузовики категории В\r\n#Микроавтобусы\r\n#Полуприцепы\r\n#Прицепы\r\n#Конец примера ///////////////////////////////////////////////////////////////////////////////////////////// можно удалить, если это мешает глазу\r\ngroup1\r\ncolumns\r\n2012-\r\n2011\r\n2010\r\n2009\r\n2008\r\n2007\r\n2006\r\n2005\r\nf\r\nk\r\nrows\r\nРСС, тыс.руб.\r\nТХ, %\r\nМБП, тыс.руб.\r\nТДУ, %\r\ngroup2\r\ncolumns\r\n2012-\r\n2011\r\n2010\r\n2009\r\n2008\r\n2007\r\n2006\r\n2005\r\nrows\r\ngroup_names\r\nЛЕГКОВЫЕ\r\nИномарки\r\nВНЕДОРОЖНИКИ\r\nВНЕДОРОЖНИК\r\nLAND ROVER\r\nLEXUS GX\r\nERCEDES G\r\nSCANIA\r\nГрузовые\r\nАВТОДОМ\r\nГрузовики для междугородних перевозок\r\nМикроавтобусы Иномарки и Грузовики категории В\r\nМикроавтобусы\r\nПолуприцепы\r\nПрицепы"
 			
 			private function self():RESOParser {
 				return this;
@@ -28,12 +34,15 @@
 			
 			private function preinit():void
 			{
+				Controller.tracer = traceCar;
+				
 				var f:File = File.documentsDirectory.resolvePath("reso_parser_data.txt"); 
 				var stream:FileStream = new FileStream();
 				try {
 					stream.open(f, FileMode.READ);
 				}catch(e:Error){
 					this.visible = false;
+					currentState = "empty";
 					Alert.okLabel = "Ок, создать файл";
 					Alert.noLabel = "Что это такое?";
 					Alert.cancelLabel = "В другой раз";
@@ -42,7 +51,7 @@
 						if (e.detail == Alert.NO) {
 							Alert.okLabel = "Ок, создать файл";
 							Alert.noLabel = "В другой раз";
-							Alert.show("reso_parser_data.txt - текстовый файл с набором правил для парсинга\nисходного текста РЕСО", "Информация", Alert.OK | Alert.CANCEL, self(), function(e:CloseEvent):void
+							Alert.show("reso_parser_data.txt - текстовый файл с набором правил для парсинга\r\nисходного текста РЕСО", "Информация", Alert.OK | Alert.CANCEL, self(), function(e:CloseEvent):void
 							{
 								if (e.detail == Alert.CANCEL) {
 									NativeApplication.nativeApplication.exit();
@@ -60,13 +69,21 @@
 				}
 			}
 			
+			public function traceCar(str:String):void
+			{
+				info.text = str;
+			}
+			
 			private function creatRulesFile():void {
 				var f:File = File.documentsDirectory.resolvePath("reso_parser_data.txt"); 
 				var stream:FileStream = new FileStream();
 				stream.open(f, FileMode.APPEND);
-				stream.writeUTFBytes(initFile);
+				var ba:ByteArray = new ByteArray();
+				ba.writeUTFBytes(initFile);
+				stream.writeBytes(ba);
 				stream.close();
 				f.openWithDefaultApplication();
+				this.visible = true;
 			}
 			
 			private function load():void 

@@ -16,8 +16,10 @@ package classes
 				this.id = str.slice(_index+2,str.indexOf("]"));
 			if (group == null) {
 				trace(name+" "+id);
+				Controller.tracer.call(null,name+" "+id); 
 			} else {
 				trace(group+" : "+name+" "+id);
+				Controller.tracer.call(null,group+" : "+name+" "+id);
 			}
 		}
 		
