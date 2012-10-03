@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   width="550"
+					   height="200"
+					   preinitialize="preinit()">
+	<mx:HBox width="100%" height="100%" horizontalAlign="left" verticalAlign="middle" paddingLeft="10" y="0">
+		<s:Button label="Load" click="load()"/>
+		<s:Label text="Загрузка .txt файла..." id="info" visible="false"/>
+	</mx:HBox>
+	<fx:Script>
+		<![CDATA[
+			import classes.FirstGroupData;
+			import classes.SecondGroupData;
+			
+			import interfaces.IDataString;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			private var file:FileReference = new FileReference();
+			private var data_array:Array = new Array();
+			private var initFile:String = "#Пример того, как выглядит файл, каждая строка с символом '#' в начале не учитывается\r#(по умолчанию файл заполнится данными, пригодными для распознавания текущей на момент написания версии РЕСО документа)\n#\n#\n#group1 // идентификатор того, что далее следует описание правил для 1й группы\n#columns // перечисление колонок\n#2012-\n#2011\n#2010\n#2009\n#2008\n#2007\n#2006\n#2005\n#f\n#k\n#rows // перечисление строк должны включать в себя точные копии из исходного документа,\n#по ним определяются границы того, или иного участка текста.\n#РСС, тыс.руб.\n#ТХ, %\n#МБП, тыс.руб.\n#ТДУ, %\n#group2 // идентификатор того, что далее следует описание правил для 2й группы\n#columns // перечисление колонок\n#2012-\n#2011\n#2010\n#2009\n#2008\n#2007\n#2006\n#2005\n#rows // перечисление строк должны включать в себя точные копии из исходного документа,\n#по ним определяются границы того, или иного участка текста.\n#group_names // регистронезависим. для корректной работы парсера на второй группе, необходимо ввести названия возможных групп автомобилей, перечисление от наибольшего к наименьшему, в случае однокоренного слова. например ВНЕДОРОДОРОЖНИКИ раньше ВНЕДОРОЖНИК\n#ЛЕГКОВЫЕ\n#Иномарки\n#ВНЕДОРОЖНИКИ\n#ВНЕДОРОЖНИК\n#LAND ROVER\n#LEXUS GX\n#MERCEDES G\n#SCANIA\n#Грузовые\n#АВТОДОМ\n#Грузовики для междугородних перевозок\n#Микроавтобусы Иномарки и Грузовики категории В\n#Микроавтобусы\n#Полуприцепы\n#Прицепы\n#Конец примера ///////////////////////////////////////////////////////////////////////////////////////////// можно удалить, если это мешает глазу\ngroup1\ncolumns\n2012-\n2011\n2010\n2009\n2008\n2007\n2006\n2005\nf\nk\nrows\nРСС, тыс.руб.\nТХ, %\nМБП, тыс.руб.\nТДУ, %\ngroup2\ncolumns\n2012-\n2011\n2010\n2009\n2008\n2007\n2006\n2005\nrows\ngroup_names\nЛЕГКОВЫЕ\nИномарки\nВНЕДОРОЖНИКИ\nВНЕДОРОЖНИК\nLAND ROVER\nLEXUS GX\nERCEDES G\nSCANIA\nГрузовые\nАВТОДОМ\nГрузовики для междугородних перевозок\nМикроавтобусы Иномарки и Грузовики категории В\nМикроавтобусы\nПолуприцепы\nПрицепы"
+			
+			private function self():RESOParser {
+				return this;
+			}
+			
+			private function preinit():void
+			{
+				var f:File = File.documentsDirectory.resolvePath("reso_parser_data.txt"); 
+				var stream:FileStream = new FileStream();
+				try {
+					stream.open(f, FileMode.READ);
+				}catch(e:Error){
+					this.visible = false;
+					Alert.okLabel = "Ок, создать файл";
+					Alert.noLabel = "Что это такое?";
+					Alert.cancelLabel = "В другой раз";
+					Alert.buttonWidth = 150;
+					Alert.show("Нет файла reso_parser_data.txt в директории: "+File.documentsDirectory.nativePath, "Ошибка", Alert.OK | Alert.NO | Alert.CANCEL, self(), function(e:CloseEvent):void{
+						if (e.detail == Alert.NO) {
+							Alert.okLabel = "Ок, создать файл";
+							Alert.noLabel = "В другой раз";
+							Alert.show("reso_parser_data.txt - текстовый файл с набором правил для парсинга\nисходного текста РЕСО", "Информация", Alert.OK | Alert.CANCEL, self(), function(e:CloseEvent):void
+							{
+								if (e.detail == Alert.CANCEL) {
+									NativeApplication.nativeApplication.exit();
+								} else {
+									creatRulesFile();
+								}
+							});
+						} else if (e.detail == Alert.CANCEL) {
+							NativeApplication.nativeApplication.exit();
+						} else {
+							creatRulesFile();
+						}
+					});
+					return;
+				}
+			}
+			
+			private function creatRulesFile():void {
+				var f:File = File.documentsDirectory.resolvePath("reso_parser_data.txt"); 
+				var stream:FileStream = new FileStream();
+				stream.open(f, FileMode.APPEND);
+				stream.writeUTFBytes(initFile);
+				stream.close();
+				f.openWithDefaultApplication();
+			}
+			
+			private function load():void 
+			{
+				var f:File = File.documentsDirectory.resolvePath("text.txt"); 
+				var stream = new FileStream();
+				stream.open(f, FileMode.WRITE);                                         
+				
+				//var j:JPGEncoder = new JPGEncoder(80);
+				//var bytes:ByteArray = j.encode(visualLogo.bitmapData);
+				//stream.writeBytes(bytes, 0, bytes.bytesAvailable);
+				
+				stream.writeUTFBytes("This is my text file.");
+				stream.close();
+				
+				//file.addEventListener( Event.SELECT, doFileSelect );
+				//file.addEventListener( Event.COMPLETE, doFileComplete );
+				//file.browse( [new FileFilter( "txt Ресо файл", "*.txt" )] );
+			}
+			
+			private function doFileSelect( event:Event ):void
+			{
+				this.enabled = false;
+				info.visible = true;
+				file.load();
+			}
+			
+			private function doFileComplete( event:Event ):void
+			{
+				var str:String = file.data.readMultiByte( file.data.bytesAvailable, "ansi" );
+				info.text = "Обработка данных...";
+				parseText( str );
+			}
+			
+			private function parseText( txt:String ):void
+			{
+				var data:IDataString;
+				txt = txt.replace(/\r/gi," ");
+				txt = txt.replace(/\t/gi," ");
+				txt = mergeThousands(txt);
+				var index:int = 0;
+				var line:String = "";
+				while (index < txt.length) {
+					var _index:int = txt.indexOf("\n", index);
+					line = txt.slice(index, _index);
+					index = _index+1;
+					
+					if (line.indexOf("Группа I.",0) != -1) {
+						if (data == null)
+							data = new FirstGroupData();
+					} else if (line.indexOf("Группа II.",0) != -1) {
+						if (data is FirstGroupData) {
+							data_array.push(data);
+							data = new SecondGroupData();
+						}
+					}
+					
+					if (data != null) {
+						if (line != "") {
+							data.addDataString(line);
+						}
+					}
+				}
+				data_array.push(data);
+			}
+			
+			private function mergeThousands(str:String):String
+			{
+				var index:int = 0;
+				var digits:Array = ["0","1","2","3","4","5","6","7","8","9"];
+				while (index < (str.length-4)) {
+					var char1:String = str.charAt(index);
+					var char2:String = str.charAt(index+1);
+					var char3:String = str.slice(index+2,index+5);
+					if ((digits.indexOf(char1)!=-1)&&(char2==" ")&&(isInt(char3))) {
+						str = str.slice(0, index+1) + str.slice(index+2);
+					}
+					index++;
+				}
+				return str;
+			}
+			
+			private function isInt(str:String):Boolean
+			{
+				var stringedInt:String = int(str).toString();
+				if (stringedInt == str) return true;
+				else {
+					if (stringedInt.length < str.length) {
+						var size:int = str.length - stringedInt.length;
+						for (var i:int = 0; i < size; i++) {
+							stringedInt = "0"+stringedInt;
+						}
+						if (stringedInt == str) return true;
+						return false;
+					}
+				}
+				return false;
+			}
+		]]>
+	</fx:Script>
+</s:WindowedApplication>
