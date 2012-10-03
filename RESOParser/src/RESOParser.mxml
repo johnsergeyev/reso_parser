@@ -171,14 +171,14 @@
 			private function parseText( txt:String ):void
 			{
 				var data:IDataString;
-				txt = txt.replace(/\r/gi," ");
-				txt = txt.replace(/\t/gi," ");
+				txt = txt.replace(/\r/gi,"");
+				txt = txt.replace(/\t/gi,"");
 				txt = mergeThousands(txt);
 				var index:int = 0;
 				var line:String = "";
 				while (index < txt.length) {
 					var _index:int = txt.indexOf("\n", index);
-					line = txt.slice(index, _index);
+					line = GroupData.correct(txt.slice(index, _index));
 					index = _index+1;
 					
 					if (line.indexOf("Группа I.",0) != -1) {
@@ -198,6 +198,8 @@
 					}
 				}
 				data_array.push(data);
+				
+				this.enabled = true;
 			}
 			
 			private function mergeThousands(str:String):String
