@@ -65,9 +65,11 @@ package classes
 		{
 			var index:int = 0;
 			var _index:int;
+			var _str:String = str.toLocaleLowerCase();
 			for (var i:int = 0; i < car_groups.length; i++) {
-				if (str.indexOf(car_groups[i]) != -1) {
-					 _index = str.indexOf(car_groups[i]) + (car_groups[i] as String).length;
+				var __str:String = (car_groups[i] as String).toLocaleLowerCase();
+				if (_str.indexOf(__str) != -1) {
+					_index = _str.indexOf(__str) + (car_groups[i] as String).length;
 					 if (_index > index) {
 						 index = _index;
 					 }
@@ -79,7 +81,7 @@ package classes
 		private function hasCarGroup(str:String, car_groups:Array):Boolean
 		{
 			for (var i:int = 0; i < car_groups.length; i++) {
-				if (str.indexOf(car_groups[i]) != -1) return true;
+				if (str.toLocaleLowerCase().indexOf((car_groups[i] as String).toLocaleLowerCase()) != -1) return true;
 			}
 			return false;
 		}
