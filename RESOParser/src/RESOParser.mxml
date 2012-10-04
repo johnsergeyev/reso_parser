@@ -3,7 +3,7 @@
 					   xmlns:s="library://ns.adobe.com/flex/spark" 
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
 					   width="550"
-					   height="300"
+					   height="150"
 					   preinitialize="preinit()" currentState="base">
 	<s:states>
 		<s:State name="base"/>
